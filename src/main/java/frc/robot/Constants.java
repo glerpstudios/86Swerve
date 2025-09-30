@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import frc.robot._resistanceswerve.util.*;
+import edu.wpi.first.math.geometry.Pose2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -15,5 +18,11 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static class SwerveConstants {
+    public static final NoGoZones.NoGoZone NO_GO_ZONE_A = new NoGoZones().new NoGoZone(new Pose2d(), new Pose2d(), new Pose2d());
+    public static final NoGoZones.NoGoZone NO_GO_ZONE_B = new NoGoZones().new NoGoZone(new Pose2d(), new Pose2d(), new Pose2d());
+    public static final NoGoZones NO_GO_ZONES = new NoGoZones(NO_GO_ZONE_A, NO_GO_ZONE_B);
   }
 }

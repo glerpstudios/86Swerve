@@ -1,18 +1,65 @@
-package frc.robot.resistanceswerve.commands;
+/**
+ * SwerveDriveToPoseAroundNoGoZonesCommand.java
+ *
+ * Description: Command to drive the robot to a pose, avoiding certain NoGoZones.
+ *
+ * Author(s): Samuel Sapatla
+ * Additional Authors: (add names here as needed)
+ *
+ * Date Created: 2025-09-29
+ * Last Modified: 2025-09-29
+ */
+package frc.robot._resistanceswerve.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.util.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import frc.robot.resistanceswerve.util.*;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.Timer;
 
+/**
+ * A command that drives the robot to a specified {@link Pose2d} target while
+ * dynamically avoiding {@link NoGoZones} on the field.
+ * <p>
+ * This command constructs a trajectory from the robot’s current pose to the
+ * desired pose. If the straight-line path intersects one or more no-go zones,
+ * a detour path is calculated by skirting the polygon edges of the obstructing
+ * zones, offset by a configurable buffer distance. The buffer ensures the
+ * robot does not clip corners and accounts for its own dimensions.
+ * <p>
+ * Once a trajectory is generated, it is executed using a
+ * {@link HolonomicDriveController} to produce chassis-level velocities,
+ * which are sent to the {@link SwerveDrive} subsystem. The robot follows this
+ * trajectory until it reaches the final pose or the command is interrupted.
+ * <p>
+ * Typical usage:
+ * <ul>
+ *   <li>Autonomous routines where the robot must navigate around field
+ *       elements or dynamically defined restricted areas.</li>
+ *   <li>Scenarios where straight-line driving to a target is not feasible
+ *       due to game pieces, field geometry, or defensive robots.</li>
+ *   <li>General obstacle avoidance when combined with updated no-go zone
+ *       definitions at runtime.</li>
+ * </ul>
+ * <p>
+ * Limitations:
+ * <ul>
+ *   <li>This command requires field-relative coordinates; it is not compatible
+ *       with robot-relative driving.</li>
+ *   <li>Pathfinding is simplified to polygon-edge detours and does not use a
+ *       full graph-search algorithm.</li>
+ *   <li>Works best for convex or mildly concave no-go zones.</li>
+ * </ul>
+ * <p>
+ * The command ends automatically once the trajectory duration elapses.
+ */
 public class SwerveDriveToPoseAroundNoGoZonesCommand extends Command{
     /**
      * The swerve drive subsystem.
@@ -81,6 +128,7 @@ public class SwerveDriveToPoseAroundNoGoZonesCommand extends Command{
      * @param holonomicDriveController The holonomic drive controller to use.
      * @param zones The no go zones that the robot must avoid.
      * @param maxVelocityMetersPerSecond The maximum velocity of the robot in meters per second.
+     * @param maxAccelerationMetersPerSecondSquared The maximum acceleration of the robot in meters per second squared.
      */
     public SwerveDriveToPoseAroundNoGoZonesCommand(  SwerveDrive swerveDrive, 
                                               double bufferDistance,

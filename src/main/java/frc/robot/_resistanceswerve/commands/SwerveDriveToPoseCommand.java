@@ -1,11 +1,54 @@
-package frc.robot.resistanceswerve.commands;
+/**
+ * SwerveDriveToPose.java
+ *
+ * Description: Command to drive the swerve drivetrain to a certain field-relative pose.
+ *
+ * Author(s): Samuel Sapatla
+ * Additional Authors: (add names here as needed)
+ *
+ * Date Created: 2025-09-29
+ * Last Modified: 2025-09-29
+ */
+package frc.robot._resistanceswerve.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
+/**
+ * A command that drives the robot directly to a specified {@link Pose2d} target
+ * using independent PID controllers for X, Y, and rotation.
+ * <p>
+ * Unlike trajectory-based commands, this command does not generate or follow a
+ * continuous path. Instead, it directly calculates the chassis speeds needed to
+ * reduce the error between the current pose and target pose, with feedback
+ * provided by the given {@link PIDController} instances.
+ * <p>
+ * Typical usage:
+ * <ul>
+ *   <li>Simple autonomous maneuvers where precise final positioning matters
+ *       more than the intermediate path.</li>
+ *   <li>Vision-based alignment (e.g., to AprilTags or targets) by setting a
+ *       desired field-relative pose.</li>
+ *   <li>Fine adjustments during autonomous routines without needing a full
+ *       trajectory generator.</li>
+ * </ul>
+ * <p>
+ * Features:
+ * <ul>
+ *   <li>High-level PID control — not per-module control — that works in
+ *       field coordinates.</li>
+ *   <li>Finishes automatically when the robot is within the configured
+ *       tolerances of the target pose.</li>
+ *   <li>Runs continuously until tolerance is met or the command is
+ *       interrupted.</li>
+ * </ul>
+ * <p>
+ * This command requires field-relative operation, as the target pose is
+ * defined in field coordinates.
+ */
 public class SwerveDriveToPoseCommand extends Command{
     /**
      * The swerve drive subsystem.

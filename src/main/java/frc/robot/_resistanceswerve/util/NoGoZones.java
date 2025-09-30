@@ -1,7 +1,58 @@
-package frc.robot.resistanceswerve.util;
+/**
+ * NoGoZones.java
+ *
+ * Description: Utility class to represent an area where the robot should not go.
+ *
+ * Author(s): Samuel Sapatla
+ * Additional Authors: (add names here as needed)
+ *
+ * Date Created: 2025-09-29
+ * Last Modified: 2025-09-29
+ */
+package frc.robot._resistanceswerve.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 
+/**
+ * A utility class representing one or more {@link NoGoZone}s on the field.
+ * <p>
+ * A no-go zone is a polygonal region that the robot must avoid entering.
+ * This class provides methods to query whether a given {@link Pose2d} lies
+ * inside a zone, and supports optional buffer distances around zones to
+ * provide clearance for the robot’s dimensions or safety margins.
+ * <p>
+ * This class is typically used in commands such as
+ * {@link frc.robot._resistanceswerve.commands.SwerveDriveToPoseAroundNoGoZonesCommand}
+ * to generate trajectories that avoid restricted areas.
+ * <p>
+ * Example usage:
+ * <pre>{@code
+ * NoGoZones zones = new NoGoZones(
+ *     new NoGoZone(new Pose2d(1, 1, new Rotation2d()),
+ *                  new Pose2d(2, 1, new Rotation2d()),
+ *                  new Pose2d(2, 2, new Rotation2d()),
+ *                  new Pose2d(1, 2, new Rotation2d()))
+ * );
+ *
+ * if (zones.whichNoGoZone(currentPose, 0.5) != -1) {
+ *     // The robot is inside a restricted area (including buffer)
+ * }
+ * }</pre>
+ *
+ * <h3>Inner Class: NoGoZone</h3>
+ * <p>
+ * Represents a single polygonal region defined by its vertices. Provides
+ * methods to:
+ * <ul>
+ *   <li>Check whether a pose lies inside the polygon.</li>
+ *   <li>Expand the polygon outward by a buffer distance.</li>
+ *   <li>Return buffered or original vertices for use in trajectory
+ *       generation.</li>
+ * </ul>
+ * <p>
+ * The polygon is assumed to be simple (non-self-intersecting) and vertices
+ * should be provided in order (clockwise or counterclockwise).
+ */
 public class NoGoZones {
 
     /**

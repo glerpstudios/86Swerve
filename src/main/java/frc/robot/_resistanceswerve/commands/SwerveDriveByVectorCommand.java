@@ -1,11 +1,43 @@
-package frc.robot.resistanceswerve.commands;
+/**
+ * SwerveDriveByVectorCommand.java
+ *
+ * Description: Command to drive the swerve drivetrain by a translation vector.
+ *
+ * Author(s): Samuel Sapatla
+ * Additional Authors: (add names here as needed)
+ *
+ * Date Created: 2025-09-29
+ * Last Modified: 2025-09-29
+ */
+package frc.robot._resistanceswerve.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.subsystems.*;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
+/**
+ * A command that moves the robot by a given vector delta using PID feedback
+ * on X, Y, and rotation.
+ * <p>
+ * The target is expressed as a {@link Transform2d}, which defines a relative
+ * translation and rotation offset from the robot's current pose. The command
+ * calculates the error between the current pose and target pose, then uses
+ * high-level {@link PIDController} instances (not module-level controllers)
+ * to drive the robot toward the target.
+ * <p>
+ * Typical usage:
+ * <ul>
+ *   <li>Autonomous moves by a fixed offset (e.g., “strafe right 1m, rotate 90°”).</li>
+ *   <li>Building blocks for multi-step autonomous sequences without needing
+ *       a full trajectory generator.</li>
+ *   <li>Quick corrections based on sensor input (e.g., vision alignment).</li>
+ * </ul>
+ * <p>
+ * The command finishes once the robot is within position and rotation
+ * tolerances of the target.
+ */
 public class SwerveDriveByVectorCommand extends Command{
     /**
      * The swerve drive subsystem.

@@ -1,13 +1,43 @@
-package frc.robot.resistanceswerve.commands;
+/**
+ * SwerveDriveByTrajectoryCommand.java
+ *
+ * Description: Command to drive the swerve drivetrain along a trajectory.
+ *
+ * Author(s): Samuel Sapatla
+ * Additional Authors: (add names here as needed)
+ *
+ * Date Created: 2025-09-29
+ * Last Modified: 2025-09-29
+ */
+package frc.robot._resistanceswerve.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.subsystems.*;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 
+/**
+ * A command that drives the robot along a predefined {@link Trajectory}
+ * using a {@link HolonomicDriveController}.
+ * <p>
+ * This command samples the trajectory over time and calculates the
+ * chassis-level velocity targets (X, Y, and angular) that move the robot
+ * along the path while maintaining desired orientation. These targets are
+ * then sent to the {@link SwerveDrive} subsystem, which translates them
+ * into individual swerve module states.
+ * <p>
+ * Typical usage:
+ * <ul>
+ *   <li>Autonomous routines that require following a generated path.</li>
+ *   <li>Integration with PathPlanner or WPILib TrajectoryGenerator.</li>
+ *   <li>Combining with event markers or command groups for complex autos.</li>
+ * </ul>
+ * <p>
+ * This command ends automatically when the trajectory duration is complete.
+ */
 public class SwerveDriveByTrajectoryCommand extends Command {
     /**
      * The swerve drive subsystem.

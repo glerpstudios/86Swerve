@@ -4,60 +4,126 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot._resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.commands.*;
+import frc.robot.OperatorInput;
+import frc.robot.subsystems.*;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  SwerveModule frontLeft = new SwerveModule("SparkMax",
+      1,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      2,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      new Translation2d(),
+      new Rotation2d());
+  SwerveModule frontRight = new SwerveModule("SparkMax",
+      3,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      4,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      new Translation2d(),
+      new Rotation2d());
+  SwerveModule backLeft = new SwerveModule("SparkMax",
+      5,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      6,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      new Translation2d(),
+      new Rotation2d());
+  SwerveModule backRight = new SwerveModule("SparkMax",
+      7,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      8,
+      new double[] { 1, 0, 0 },
+      MotorType.kBrushed,
+      new Translation2d(),
+      new Rotation2d());
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  SwerveDrive drive = new SwerveDrive(frontLeft, frontRight, backLeft, backRight, new Pigeon2(9),
+      10,
+      11,
+      true,
+      1,
+      new PIDController(1, 0, 0),
+      new PIDController(1, 0, 0),
+      new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(1, 1)));
+
+  OperatorInput input = new OperatorInput();
+
+  Vision vision = new Vision();
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
+    drive.updateRobotPoseOutsideOdometry(
+      () -> {
+        return vision.getPose();
+      }
+    );
     // Configure the trigger bindings
     configureBindings();
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // When button 1 is pressed, 
+    input.js1.onTrue(new SwerveDriveToPoseAroundNoGoZonesCommand(
+        drive, 
+        6, 
+        new Pose2d(),
+        drive.getHolonomicDriveController(), 
+        Constants.SwerveConstants.NO_GO_ZONES, 
+        1, 
+        1
+        ));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    input.js2.onTrue(new SwerveDriveDefenseCommand(
+      drive, 
+      "active", 
+      3
+      ));
   }
 }

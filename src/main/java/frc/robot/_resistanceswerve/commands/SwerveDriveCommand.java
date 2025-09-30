@@ -1,11 +1,41 @@
-package frc.robot.resistanceswerve.commands;
+/**
+ * SwerveDriveDefenseCommand.java
+ *
+ * Description: Command to resist movement of the robot either actively or passively.
+ *
+ * Author(s): Samuel Sapatla
+ * Additional Authors: (add names here as needed)
+ *
+ * Date Created: 2025-09-29
+ * Last Modified: 2025-09-29
+ */
+package frc.robot._resistanceswerve.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.resistanceswerve.subsystems.*;
+import frc.robot._resistanceswerve.subsystems.*;
 
 import java.util.function.Supplier;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
+/**
+ * A default teleoperated driving command for the {@link SwerveDrive}.
+ * <p>
+ * This command continuously reads operator inputs (via {@link Supplier}s
+ * for X, Y, rotation, and field-relative toggle) and drives the robot
+ * accordingly. It is designed to be the “default command” of the
+ * {@link SwerveDrive} subsystem during teleop, meaning it will run whenever
+ * no other swerve command is scheduled.
+ * <p>
+ * Features:
+ * <ul>
+ *   <li>Supports both robot-relative and field-relative driving modes.</li>
+ *   <li>Accepts continuous input updates (e.g., joystick axes).</li>
+ *   <li>Automatically stops the robot when interrupted or ended.</li>
+ * </ul>
+ * <p>
+ * This command never ends on its own — it is only interrupted by another
+ * command that requires the swerve subsystem.
+ */
 public class SwerveDriveCommand extends Command {
     /**
      * The swerve drive subsystem.

@@ -21,6 +21,9 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
+    public static final double[] turnPIDconstants = {0, 0, 1};
+    public static final double[] drivePIDconstants = {0, 1, 0};
+
     public static final NoGoZones.NoGoZone NO_GO_ZONE_A = new NoGoZones().new NoGoZone(new Pose2d(), new Pose2d(), new Pose2d());
     public static final NoGoZones.NoGoZone NO_GO_ZONE_B = new NoGoZones().new NoGoZone(new Pose2d(), new Pose2d(), new Pose2d());
     public static final NoGoZones NO_GO_ZONES = new NoGoZones(NO_GO_ZONE_A, NO_GO_ZONE_B);

@@ -33,37 +33,37 @@ public class RobotContainer {
 
   SwerveModule frontLeft = new SwerveModule("SparkMax",
       1,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.drivePIDconstants,
       MotorType.kBrushed,
       2,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.turnPIDconstants,
       MotorType.kBrushed,
       new Translation2d(),
       new Rotation2d());
   SwerveModule frontRight = new SwerveModule("SparkMax",
       3,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.drivePIDconstants,
       MotorType.kBrushed,
       4,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.turnPIDconstants,
       MotorType.kBrushed,
       new Translation2d(),
       new Rotation2d());
   SwerveModule backLeft = new SwerveModule("SparkMax",
       5,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.drivePIDconstants,
       MotorType.kBrushed,
       6,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.turnPIDconstants,
       MotorType.kBrushed,
       new Translation2d(),
       new Rotation2d());
   SwerveModule backRight = new SwerveModule("SparkMax",
       7,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.drivePIDconstants,
       MotorType.kBrushed,
       8,
-      new double[] { 1, 0, 0 },
+      Constants.SwerveConstants.turnPIDconstants,
       MotorType.kBrushed,
       new Translation2d(),
       new Rotation2d());
@@ -109,7 +109,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // When button 1 is pressed, 
+    // When button 1 is pressed, go to a set pose while driving around no go zones.
     input.js1.onTrue(new SwerveDriveToPoseAroundNoGoZonesCommand(
         drive, 
         6, 
@@ -120,6 +120,7 @@ public class RobotContainer {
         1
         ));
 
+    // When button 2 is pressed, resist motion.
     input.js2.onTrue(new SwerveDriveDefenseCommand(
       drive, 
       "active", 

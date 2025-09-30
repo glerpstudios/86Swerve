@@ -7,7 +7,7 @@
  * Additional Authors: (add names here as needed)
  *
  * Date Created: 2025-09-29
- * Last Modified: 2025-09-29
+ * Last Modified: 2025-09-30
  */
 package frc.robot._resistanceswerve.commands;
 
@@ -106,6 +106,13 @@ public class SwerveDriveByTrajectoryCommand extends Command {
     @Override
     public boolean isFinished() {
         // The command is finished when the trajectory is complete.
-        return timer.get() >= trajectory.getTotalTimeSeconds();
+        Pose2d error = trajectory.getStates()
+                .get(trajectory.getStates().size() - 1) // final pose
+                        .poseMeters
+                .relativeTo(swerveDrive.getPoseByOdometry());
+
+        return Math.abs(error.getX()) < 0.05 &&
+                Math.abs(error.getY()) < 0.05 &&
+                Math.abs(error.getRotation().getRadians()) < 0.05;
     }
 }

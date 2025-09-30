@@ -370,8 +370,8 @@ public class SwerveDriveToPoseAroundNoGoZonesCommand extends Command{
         ChassisSpeeds chassisSpeeds = holonomicDriveController.calculate(currentPose, desiredState, desiredState.poseMeters.getRotation());
 
         // Pass the calculated chassis speeds to the swerve drive subsystem.
-        // Field relative is false because the controller already accounts for it.
-        swerveDrive.drive(chassisSpeeds, false);
+        // Field relative is true because NoGoZones are field-relative
+        swerveDrive.drive(chassisSpeeds, true);
     }
 
     @Override
